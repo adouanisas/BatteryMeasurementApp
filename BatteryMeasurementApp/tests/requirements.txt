@@ -1,0 +1,20 @@
+# Appium test dependencies
+appium==2.0.0
+selenium==4.15.0
+requests==2.31.0
+urllib3==2.0.7
+
+# Test utilities
+pytest==7.4.3
+pytest-html==4.1.1
+pytest-xdist==3.5.0
+
+# iOS testing
+ios-device==0.9.0
+
+# Android testing
+uiautomator2==2.16.0
+
+# Reporting
+allure-pytest==2.13.2
+pytest-json-report==1.5.0

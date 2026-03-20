@@ -49,6 +49,10 @@ venv/
 .venv/
 env/
 ENV/
+BatteryMeasurementApp/venv/
+BatteryMeasurementApp/.venv/
+BatteryMeasurementApp/env/
+BatteryMeasurementApp/ENV/
 
 # Secrets and credentials
 *.p12
