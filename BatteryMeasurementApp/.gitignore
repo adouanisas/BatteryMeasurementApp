@@ -9,6 +9,7 @@
 *.aab
 *.jar
 *.class
+.kotlin/
 
 # Android
 androidApp/build/
