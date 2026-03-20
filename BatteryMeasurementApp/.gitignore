@@ -1,0 +1,94 @@
+# Build artifacts
+*.iml
+.gradle
+/build
+/captures
+.externalNativeBuild
+.cxx
+*.apk
+*.aab
+*.jar
+*.class
+
+# Android
+androidApp/build/
+composeApp/build/
+/local.properties
+*.keystore
+*.jks
+
+# iOS
+iosApp/build/
+iosApp/*.xcworkspace
+iosApp/Pods/
+iosApp/*.xcuserstate
+iosApp/IDEWorkspaceChecks.plist
+
+# IDE
+/.idea
+.DS_Store
+*.swp
+*.swo
+*~
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# Virtual environments
+.env
+.env.local
+.env.*.local
+venv/
+.venv/
+env/
+ENV/
+
+# Secrets and credentials
+*.p12
+*.pfx
+*.cer
+secrets.properties
+credentials.json
+firebase-config.json
+google-services.json
+GoogleService-Info.plist
+
+# Appium and testing
+*.log
+appium.log
+allure-results/
+test-results/
+
+# Gradle
+.gradle/
+gradle-app.setting
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+[Dd]esktop.ini
+
+# Linux
+*~
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.backup
+
+# Documentation
+_site/
+.sass-cache/
+.jekyll-cache/

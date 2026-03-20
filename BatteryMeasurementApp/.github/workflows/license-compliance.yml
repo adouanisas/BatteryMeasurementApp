@@ -1,0 +1,129 @@
+name: License Compliance Check
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  schedule:
+    # Run weekly on Monday at 9 AM
+    - cron: '0 9 * * 1'
+
+jobs:
+  check-licenses:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+        
+    - name: Install Python dependencies
+      run: |
+        python -m pip install --upgrade pip
+        if [ -f "appium-tests/requirements.txt" ]; then
+          pip install -r appium-tests/requirements.txt
+        fi
+        
+    - name: Run license compliance check
+      run: |
+        echo "🔍 Running automated license compliance check..."
+        python scripts/check-licenses.py
+        
+    - name: Upload compliance report
+      uses: actions/upload-artifact@v3
+      with:
+        name: license-compliance-report
+        path: LICENSE_COMPLIANCE_REPORT.md
+        
+    - name: Check for compliance issues
+      id: compliance-check
+      run: |
+        if grep -q "❌ Not Compatible" LICENSE_COMPLIANCE_REPORT.md; then
+          echo "::error::Found non-EUPL compatible dependencies"
+          echo "has_issues=true" >> $GITHUB_OUTPUT
+        elif grep -q "❓ Unknown License" LICENSE_COMPLIANCE_REPORT.md; then
+          echo "::warning::Some dependencies have unknown licenses"
+          echo "has_warnings=true" >> $GITHUB_OUTPUT
+        else
+          echo "✅ All dependencies are EUPL compatible"
+          echo "all_ok=true" >> $GITHUB_OUTPUT
+        fi
+        
+    - name: Update DEPENDENCIES.md
+      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      run: |
+        echo "🔄 Updating DEPENDENCIES.md..."
+        python scripts/update-dependencies-md.py
+        
+    - name: Create PR for dependency updates
+      if: github.event_name == 'schedule'
+      uses: peter-evans/create-pull-request@v5
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        commit-message: "chore: update license compliance documentation"
+        title: "📋 Update license compliance documentation"
+        body: |
+          ## Automated License Compliance Update
+          
+          This PR updates the license compliance documentation based on the latest dependency scan.
+          
+          ### Changes:
+          - Updated `DEPENDENCIES.md` with current dependency information
+          - Generated latest `LICENSE_COMPLIANCE_REPORT.md`
+          - Updated last modified date
+          
+          ### Compliance Status:
+          $(grep -A5 "## Compliance Summary" LICENSE_COMPLIANCE_REPORT.md | tail -5)
+          
+          ### Next Steps:
+          1. Review the updated documentation
+          2. Verify any license compatibility issues
+          3. Merge if everything looks good
+        branch: update/license-compliance
+        delete-branch: true
+        
+    - name: Comment on PR with compliance status
+      if: github.event_name == 'pull_request'
+      uses: actions/github-script@v6
+      with:
+        script: |
+          const fs = require('fs');
+          let report = '## 📋 License Compliance Check Results\n\n';
+          
+          try {
+            const content = fs.readFileSync('LICENSE_COMPLIANCE_REPORT.md', 'utf8');
+            
+            // Extract summary section
+            const summaryMatch = content.match(/## Compliance Summary[\s\S]*?(?=##|$)/);
+            if (summaryMatch) {
+              report += summaryMatch[0] + '\n';
+            }
+            
+            // Check for issues
+            if (content.includes('❌ Not Compatible')) {
+              report += '\n⚠️ **ACTION REQUIRED**: Non-EUPL compatible dependencies found!\n';
+              report += 'Please review the full report and replace incompatible dependencies.\n';
+            } else if (content.includes('❓ Unknown License')) {
+              report += '\nℹ️ **NOTE**: Some dependencies have unknown licenses.\n';
+              report += 'Please verify these licenses manually.\n';
+            } else {
+              report += '\n✅ **SUCCESS**: All dependencies are EUPL compatible!\n';
+            }
+            
+            report += '\n[View full report](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})';
+            
+          } catch (error) {
+            report = '## ❌ Error\n\nCould not generate compliance report.';
+          }
+          
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: report
+          });
