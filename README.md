@@ -5,7 +5,6 @@ A simple Compose Multiplatform app demonstrating battery measurement simulation 
 ## Project Structure
 
 ```
-BatteryMeasurementApp/
 ├── composeApp/                 # Shared Compose Multiplatform code
 │   └── src/
 │       ├── commonMain/         # Common UI code
@@ -13,9 +12,9 @@ BatteryMeasurementApp/
 │       └── iosMain/            # iOS-specific implementations
 ├── androidApp/                 # Android application module
 ├── iosApp/                     # iOS application (Xcode project)
-├── appium-tests/               # Appium test scripts
-│   ├── test_battery_measurement.py
-│   └── requirements.txt
+├── appiumTests/                # Appium test module (Kotlin)
+├── sharedTestTags/             # Shared test tags for Appium
+├── scripts/                    # Build and utility scripts
 └── gradle/                     # Gradle wrapper
 ```
 
@@ -38,56 +37,27 @@ BatteryMeasurementApp/
 - **Kotlin Multiplatform Mobile plugin** (install via Android Studio plugins)
 
 ### For Testing
-- **Python 3.8+**
 - **Node.js 16+** (for Appium)
 - **Appium 2.x**
+- **Android Studio** (to run Kotlin Appium tests)
 
 ## Building the App
 
 ### Android
 
-1. Open the project in Android Studio
-2. Sync Gradle files
-3. Build the debug APK:
-
 ```bash
-cd BatteryMeasurementApp
-./gradlew :androidApp:assembleDebug
+sh scripts/build_apps.sh --android
 ```
 
 The APK will be at: `androidApp/build/outputs/apk/debug/androidApp-debug.apk`
 
 ### iOS
 
-1. Generate the iOS framework:
-
 ```bash
-cd BatteryMeasurementApp
-./gradlew :composeApp:linkDebugFrameworkIosSimulatorArm64
+sh scripts/build_apps.sh --ios
 ```
 
-2. Open `iosApp/iosApp.xcodeproj` in Xcode
-3. Add the ComposeApp framework:
-   - Go to project settings → General → Frameworks, Libraries
-   - Add the framework from `composeApp/build/bin/iosSimulatorArm64/debugFramework/`
-4. Build and run on simulator
-
-## Running the App
-
-### Android
-
-```bash
-# Start an emulator first
-emulator -avd <your_avd_name>
-
-# Install and run
-./gradlew :androidApp:installDebug
-adb shell am start -n com.example.batterymeasurement.android/.MainActivity
-```
-
-### iOS
-
-Run from Xcode on a simulator or device.
+The app will be built for the iOS Simulator.
 
 ## Appium Testing
 
@@ -102,46 +72,27 @@ appium driver install uiautomator2  # For Android
 appium driver install xcuitest      # For iOS
 ```
 
-### 2. Install Python Dependencies
+### 2. Start Appium Server
 
 ```bash
-cd appium-tests
-pip install -r requirements.txt
+appium --port 4723 --address 127.0.0.1
 ```
 
-### 3. Start Appium Server
+### 3. Build the Apps
 
 ```bash
-appium
-```
+# Build iOS app
+sh scripts/build_apps.sh --ios
 
-The server will start at `http://127.0.0.1:4723`
+# Build Android app
+sh scripts/build_apps.sh --android
+```
 
 ### 4. Run Tests
 
-#### Android Test
-
-```bash
-# Make sure an emulator is running and the app is installed
-cd appium-tests
-python test_battery_measurement.py --platform android --app-path ../androidApp/build/outputs/apk/debug/androidApp-debug.apk
-```
-
-#### iOS Test
-
-```bash
-# Make sure a simulator is running
-cd appium-tests
-python test_battery_measurement.py --platform ios --app-path ../iosApp/build/Debug-iphonesimulator/iosApp.app
-```
-
-### Test Script Options
-
-```
---platform      Target platform: android or ios (default: android)
---appium-url    Appium server URL (default: http://127.0.0.1:4723)
---app-path      Path to the app file (.apk or .app)
-```
+1. Start an Android emulator or iOS simulator
+2. Open the project in Android Studio
+3. Run the Appium tests from the `appiumTests` module
 
 ## Accessibility Identifiers (Test Tags)
 

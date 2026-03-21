@@ -23,13 +23,12 @@ import io.appium.java_client.android.options.UiAutomator2Options
 import io.appium.java_client.ios.IOSDriver
 import io.appium.java_client.ios.options.XCUITestOptions
 import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.Assumptions.assumeTrue
 import org.junit.jupiter.api.BeforeEach
 import org.openqa.selenium.WebElement
 import java.io.File
 import java.net.InetSocketAddress
 import java.net.Socket
-import java.net.URL
+import java.net.URI
 import java.time.Duration
 
 abstract class BaseAppiumTest {
@@ -75,8 +74,13 @@ abstract class BaseAppiumTest {
 
     @BeforeEach
     open fun setUp() {
-        assumeTrue(isAppiumRunning()) {
-            "Appium server not running on $APPIUM_HOST:$APPIUM_PORT. Start it with: appium"
+        val isRunning = isAppiumRunning()
+        println("Appium server check: $isRunning")
+        
+        if (!isRunning) {
+            println("ERROR: Appium server not running on $APPIUM_HOST:$APPIUM_PORT")
+            println("Start it with: appium --port $APPIUM_PORT --address $APPIUM_HOST")
+            throw IllegalStateException("Appium server not running. Start it with: appium --port $APPIUM_PORT --address $APPIUM_HOST")
         }
 
         driver = when (platform) {
@@ -96,7 +100,7 @@ abstract class BaseAppiumTest {
             .setDeviceName(deviceName)
 
         val apkPath = androidApkPath
-        if (apkPath.isEmpty()) {
+        if (apkPath.isNotEmpty()) {
             options.setApp(apkPath)
             println("Using APK: $apkPath")
         } else {
@@ -109,7 +113,7 @@ abstract class BaseAppiumTest {
         options.setFullReset(false)
         options.setCapability("appium:dontStopAppOnReset", true)
 
-        return AndroidDriver(URL("http://$APPIUM_HOST:$APPIUM_PORT"), options)
+        return AndroidDriver(URI("http://$APPIUM_HOST:$APPIUM_PORT").toURL(), options)
     }
 
     private fun createIosDriver(): IOSDriver {
@@ -118,13 +122,18 @@ abstract class BaseAppiumTest {
             .setAutomationName("XCUITest")
             .setDeviceName(deviceName)
 
-        options.setApp(iosAppPath)
+        if (iosAppPath.isNotEmpty()) {
+            options.setApp(iosAppPath)
+            println("Using iOS app: $iosAppPath")
+        } else {
+            println("Warning: No iOS app found, using already installed app")
+        }
         options.setBundleId("com.adouani.batterymeasurement.iosApp")
 
         options.setNoReset(true)
         options.setFullReset(false)
 
-        return IOSDriver(URL("http://$APPIUM_HOST:$APPIUM_PORT"), options)
+        return IOSDriver(URI("http://$APPIUM_HOST:$APPIUM_PORT").toURL(), options)
     }
 
     @AfterEach

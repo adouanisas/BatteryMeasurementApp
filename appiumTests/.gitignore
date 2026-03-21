@@ -25,3 +25,7 @@ src/main/kotlin/com/example/batterymeasurement/TestTags.kt
 # Test results
 test-results/
 allure-results/
+
+# Appium page sources
+page_source_ios.xml
+page_source_android.xml

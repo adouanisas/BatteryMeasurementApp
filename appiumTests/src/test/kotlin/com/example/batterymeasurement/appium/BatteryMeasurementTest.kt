@@ -29,21 +29,6 @@ import java.io.File
  */
 @Tag("shared")
 abstract class BatteryMeasurementTest : BaseAppiumTest() {
-
-    @Test
-    fun testDebugPageSource() {
-        sleep(3)
-
-        // Click button first to have content
-        /*val button = findByTag(TestTags.START_MEASUREMENT_BUTTON)
-        button.click()
-        sleep(2)*/
-
-        val source = driver.pageSource
-        File("page_source_ios.xml").writeText(source)
-        println(source)
-    }
-
     @Test
     fun testBatteryLevelDisplay() {
         println("Testing battery level display on $platform...")
