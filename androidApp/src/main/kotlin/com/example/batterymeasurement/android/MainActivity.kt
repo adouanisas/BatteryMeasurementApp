@@ -34,9 +34,9 @@ class MainActivity : ComponentActivity() {
                 modifier = Modifier.semantics { testTagsAsResourceId = true },
                 content = { App() }
             ) { measurables, constraints ->
-                val placeables = measurables.map { it.measure(constraints) }
+                val measurables = measurables.map { it.measure(constraints) }
                 layout(constraints.maxWidth, constraints.maxHeight) {
-                    placeables.forEach { it.placeRelative(0, 0) }
+                    measurables.forEach { it.placeRelative(0, 0) }
                 }
             }
         }
