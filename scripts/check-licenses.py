@@ -23,7 +23,12 @@ import subprocess
 import sys
 from pathlib import Path
 from typing import Dict, List, Tuple, Optional
-import tomllib
+
+# tomllib is available in Python 3.11+, fallback to tomli for older versions
+try:
+    import tomllib
+except ImportError:
+    import tomli as tomllib
 
 # EUPL compatible licenses (from EUPL-1.2 Appendix)
 EUPL_COMPATIBLE_LICENSES = {
