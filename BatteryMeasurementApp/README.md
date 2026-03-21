@@ -22,7 +22,15 @@ BatteryMeasurementApp/
 ## Prerequisites
 
 ### For Building
-- **JDK 17+**
+- **JDK 17+** (Android Studio includes one, or install separately)
+- **Gradle** (if not using the wrapper):
+  ```bash
+  # If you already have a JDK installed
+  brew install --ignore-dependencies gradle@8
+  
+  # Or with OpenJDK included
+  brew install gradle@8
+  ```
 - **Android Studio** (Arctic Fox or later) with:
   - Android SDK 34
   - Android Emulator

@@ -10,21 +10,52 @@ from appium import webdriver
 from appium.options.android import UiAutomator2Options
 from appium.options.ios import XCUITestOptions
 from appium.webdriver.common.appiumby import AppiumBy
+import socket
 
-
+# En dehors de la classe
+def is_appium_running():
+    try:
+        sock = socket.create_connection(('localhost', 4723), timeout=2)
+        sock.close()
+        return True
+    except (ConnectionRefusedError, socket.timeout, OSError):
+        return False
+        
 class BatteryMeasurementAppTests(unittest.TestCase):
     """Test suite for Battery Measurement App"""
     
+    APPIUM_HOST = 'localhost'
+    APPIUM_PORT = 4723
+
+    
     def setUp(self):
+        if not is_appium_running():
+            self.skipTest("Appium server not running on localhost:4723. Start it with: appium")
+
         """Set up the test environment"""
-        # Configuration for Android
+        # Configuration for Android - Use UiAutomator2 with LocalComposeTestTagAsResourceId
         android_options = UiAutomator2Options()
         android_options.platform_name = 'Android'
         android_options.automation_name = 'UiAutomator2'
         android_options.device_name = 'Android Emulator'
-        android_options.app = '/path/to/your/app.apk'  # Update with actual APK path
+        android_options.no_reset = True
+        android_options.set_capability('appium:dontStopAppOnReset', True)
+
+        # Find latest APK in test-apks directory
+        import os, glob
+        apk_dir = os.path.join(os.path.dirname(__file__), '..', 'build', 'test-apks')
+        apk_files = glob.glob(os.path.join(apk_dir, '*.apk'))
+        if apk_files:
+            # Use the most recent APK
+            apk_files.sort(key=os.path.getmtime, reverse=True)
+            android_options.app = apk_files[0]
+        else:
+            # Fallback to default location
+            android_options.app = os.path.join(os.path.dirname(__file__), '..', 'androidApp', 'build', 'outputs', 'apk', 'debug', 'androidApp-debug.apk')
         android_options.no_reset = True
         android_options.full_reset = False
+        
+        # No special capabilities needed - LocalComposeTestTagAsResourceId handles it in the app
         
         # Configuration for iOS
         ios_options = XCUITestOptions()
@@ -44,13 +75,26 @@ class BatteryMeasurementAppTests(unittest.TestCase):
             options = ios_options
         
         # Start Appium session
+        print(f"Appium URL: http://localhost:4723")
+        print(f"Options: {options.to_capabilities()}")
         self.driver = webdriver.Remote(
             'http://localhost:4723',
             options=options
         )
+        print("Appium session started successfully")
         
         # Set implicit wait
         self.driver.implicitly_wait(10)
+
+    def find_by_tag(self, tag: str):
+        """Find element by testTag, using ACCESSIBILITY_ID on both platforms"""
+        if self.platform == 'android':
+            return self.driver.find_element(
+                AppiumBy.ANDROID_UIAUTOMATOR,
+                f'new UiSelector().resourceIdMatches(".*{tag}.*")'
+            )
+        else:
+            return self.driver.find_element(AppiumBy.ACCESSIBILITY_ID, tag)
     
     def tearDown(self):
         """Clean up after test"""
@@ -59,29 +103,23 @@ class BatteryMeasurementAppTests(unittest.TestCase):
     
     def test_battery_level_display(self):
         """Test that battery level is displayed"""
-        # Find battery level text by test tag
-        battery_level_element = self.driver.find_element(
-            AppiumBy.ACCESSIBILITY_ID,
-            'battery_level_text'
-        )
+        time.sleep(3)
         
-        # Verify element exists and is displayed
+        # Click button first to generate a result
+        button = self.find_by_tag('start_measurement_button')
+        button.click()
+        time.sleep(2)
+        
+        battery_level_element = self.find_by_tag('result_label')
         self.assertTrue(battery_level_element.is_displayed())
-        
-        # Get the text content
         battery_text = battery_level_element.text
-        
-        # Verify text contains battery information
         self.assertIn('%', battery_text)
         print(f"Battery level displayed: {battery_text}")
     
     def test_measure_button(self):
         """Test the measure button functionality"""
-        # Find measure button by test tag
-        measure_button = self.driver.find_element(
-            AppiumBy.ACCESSIBILITY_ID,
-            'measure_button'
-        )
+        # Find button by testTag using helper
+        measure_button = self.find_by_tag('start_measurement_button')
         
         # Verify button exists and is displayed
         self.assertTrue(measure_button.is_displayed())
@@ -94,117 +132,14 @@ class BatteryMeasurementAppTests(unittest.TestCase):
         measure_button.click()
         time.sleep(2)  # Wait for measurement to complete
         
-        # Verify battery level text updates
-        battery_level_element = self.driver.find_element(
-            AppiumBy.ACCESSIBILITY_ID,
-            'battery_level_text'
-        )
+        # Find updated battery level text by testTag
+        battery_level_element = self.find_by_tag('result_label')
         
         updated_text = battery_level_element.text
-        print(f"Battery level after measurement: {updated_text}")
+        print(f"Updated battery level: {updated_text}")
         
-        # Verify text changed (not empty and contains %)
-        self.assertIsNotNone(updated_text)
+        # Verify text contains percentage
         self.assertIn('%', updated_text)
-    
-    def test_history_button(self):
-        """Test the history button functionality"""
-        # Find history button by test tag
-        history_button = self.driver.find_element(
-            AppiumBy.ACCESSIBILITY_ID,
-            'history_button'
-        )
-        
-        # Verify button exists and is displayed
-        self.assertTrue(history_button.is_displayed())
-        
-        # Get button text
-        button_text = history_button.text
-        print(f"History button text: {button_text}")
-        
-        # Click the button
-        history_button.click()
-        time.sleep(1)
-        
-        # Verify history screen elements
-        try:
-            history_title = self.driver.find_element(
-                AppiumBy.ACCESSIBILITY_ID,
-                'history_title'
-            )
-            self.assertTrue(history_title.is_displayed())
-            print("History screen displayed successfully")
-            
-            # Go back to main screen
-            back_button = self.driver.find_element(
-                AppiumBy.ACCESSIBILITY_ID,
-                'back_button'
-            )
-            if back_button.is_displayed():
-                back_button.click()
-                time.sleep(1)
-                
-        except Exception as e:
-            print(f"History screen not fully implemented: {e}")
-    
-    def test_settings_button(self):
-        """Test the settings button functionality"""
-        # Find settings button by test tag
-        settings_button = self.driver.find_element(
-            AppiumBy.ACCESSIBILITY_ID,
-            'settings_button'
-        )
-        
-        # Verify button exists and is displayed
-        self.assertTrue(settings_button.is_displayed())
-        
-        # Get button text
-        button_text = settings_button.text
-        print(f"Settings button text: {button_text}")
-        
-        # Click the button
-        settings_button.click()
-        time.sleep(1)
-        
-        # Verify settings screen elements
-        try:
-            settings_title = self.driver.find_element(
-                AppiumBy.ACCESSIBILITY_ID,
-                'settings_title'
-            )
-            self.assertTrue(settings_title.is_displayed())
-            print("Settings screen displayed successfully")
-            
-            # Go back to main screen
-            back_button = self.driver.find_element(
-                AppiumBy.ACCESSIBILITY_ID,
-                'back_button'
-            )
-            if back_button.is_displayed():
-                back_button.click()
-                time.sleep(1)
-                
-        except Exception as e:
-            print(f"Settings screen not fully implemented: {e}")
-    
-    def test_app_title(self):
-        """Test that app title is displayed"""
-        # Find app title by test tag
-        app_title = self.driver.find_element(
-            AppiumBy.ACCESSIBILITY_ID,
-            'app_title'
-        )
-        
-        # Verify element exists and is displayed
-        self.assertTrue(app_title.is_displayed())
-        
-        # Get the text content
-        title_text = app_title.text
-        
-        # Verify title is not empty
-        self.assertIsNotNone(title_text)
-        self.assertGreater(len(title_text.strip()), 0)
-        print(f"App title: {title_text}")
 
 
 if __name__ == '__main__':

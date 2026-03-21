@@ -21,13 +21,24 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import com.example.batterymeasurement.App
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTagsAsResourceId
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            App()
+            androidx.compose.ui.layout.Layout(
+                modifier = Modifier.semantics { testTagsAsResourceId = true },
+                content = { App() }
+            ) { measurables, constraints ->
+                val placeables = measurables.map { it.measure(constraints) }
+                layout(constraints.maxWidth, constraints.maxHeight) {
+                    placeables.forEach { it.placeRelative(0, 0) }
+                }
+            }
         }
     }
 }

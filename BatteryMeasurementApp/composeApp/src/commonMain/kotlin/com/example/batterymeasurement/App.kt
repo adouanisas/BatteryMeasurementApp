@@ -34,6 +34,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import kotlin.random.Random
 
@@ -71,7 +73,8 @@ fun BatteryMeasurementScreen() {
                 resultText = "Battery consumption: $batteryValue%"
                 logMeasurement(batteryValue)
             },
-            modifier = Modifier.testTag(TestTags.START_MEASUREMENT_BUTTON)
+            modifier = Modifier
+                .testTag(TestTags.START_MEASUREMENT_BUTTON)
         ) {
             Text("Start Measurement")
         }
@@ -81,7 +84,11 @@ fun BatteryMeasurementScreen() {
         Text(
             text = resultText,
             style = MaterialTheme.typography.headlineSmall,
-            modifier = Modifier.testTag(TestTags.RESULT_LABEL)
+            modifier = Modifier
+                .testTag(TestTags.RESULT_LABEL)
+                .semantics { contentDescription = "Measurement result" }
+            // when resultText is empty, the label won't be in the accessibility tree
+            // and if contentDescription is not empty then it will be in the accessibility tree
         )
     }
 }
