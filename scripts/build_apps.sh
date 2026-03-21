@@ -104,7 +104,7 @@ build_ios() {
             -configuration Debug \
             -sdk iphonesimulator \
             -derivedDataPath "$DERIVED_DATA" \
-            -destination 'platform=iOS Simulator,name=iPhone 17' \
+            -destination 'platform=iOS Simulator,name=iPhone 15' \
             build
     elif [ -d "$PROJECT_DIR/iosApp/iosApp.xcworkspace" ]; then
         xcodebuild -workspace "$PROJECT_DIR/iosApp/iosApp.xcworkspace" \
@@ -112,7 +112,7 @@ build_ios() {
             -configuration Debug \
             -sdk iphonesimulator \
             -derivedDataPath "$DERIVED_DATA" \
-            -destination 'platform=iOS Simulator,name=iPhone 17' \
+            -destination 'platform=iOS Simulator,name=iPhone 15' \
             build
     else
         print_warning "No Xcode project found. Generating with xcodegen or creating manually..."
@@ -125,7 +125,7 @@ build_ios() {
                 -configuration Debug \
                 -sdk iphonesimulator \
                 -derivedDataPath "$DERIVED_DATA" \
-                -destination 'platform=iOS Simulator,name=iPhone 17' \
+                -destination 'platform=iOS Simulator,name=iPhone 15' \
                 build
         else
             print_error "No Xcode project found and xcodegen not installed."
@@ -147,18 +147,14 @@ build_ios() {
     fi
 }
 
-run_appium_tests() {
-    print_status "Running Appium tests..."
-    cd "$PROJECT_DIR/tests"
-    
-    if [ -n "$ANDROID_APK_PATH" ]; then
-        print_status "Running Android tests..."
-        python run_tests.py --platform android --app "$ANDROID_APK_PATH"
-    fi
-    
-    if [ -n "$IOS_APP_PATH" ]; then
-        print_status "Running iOS tests..."
-        python run_tests.py --platform ios --app "$IOS_APP_PATH"
+clean_ios_derived_data() {
+    print_status "Cleaning iOS derived data..."
+    DERIVED_DATA="$PROJECT_DIR/build/ios-derived-data"
+    if [ -d "$DERIVED_DATA" ]; then
+        rm -rf "$DERIVED_DATA"
+        print_status "iOS derived data cleaned: $DERIVED_DATA"
+    else
+        print_status "No iOS derived data to clean"
     fi
 }
 
@@ -169,19 +165,19 @@ show_help() {
     echo "  --android       Build Android APK only"
     echo "  --ios           Build iOS App only"
     echo "  --all           Build both Android and iOS (default)"
-    echo "  --test          Run Appium tests after build"
+    echo "  --clean-ios     Clean iOS derived data before build"
     echo "  --help          Show this help message"
     echo ""
     echo "Examples:"
     echo "  $0 --android              # Build Android APK"
     echo "  $0 --ios                  # Build iOS App"
     echo "  $0 --all                  # Build both"
-    echo "  $0 --android --test       # Build Android and run tests"
+    echo "  $0 --ios --clean-ios      # Clean and build iOS"
 }
 
 BUILD_ANDROID=false
 BUILD_IOS=false
-RUN_TESTS=false
+CLEAN_IOS=false
 
 if [ $# -eq 0 ]; then
     BUILD_ANDROID=true
@@ -203,8 +199,8 @@ while [[ $# -gt 0 ]]; do
             BUILD_IOS=true
             shift
             ;;
-        --test)
-            RUN_TESTS=true
+        --clean-ios)
+            CLEAN_IOS=true
             shift
             ;;
         --help)
@@ -223,16 +219,16 @@ echo "=========================================="
 echo "  Battery Measurement App Builder"
 echo "=========================================="
 
+if [ "$BUILD_IOS" = true ] && [ "$CLEAN_IOS" = true ]; then
+    clean_ios_derived_data
+fi
+
 if [ "$BUILD_ANDROID" = true ]; then
     build_android
 fi
 
 if [ "$BUILD_IOS" = true ]; then
     build_ios
-fi
-
-if [ "$RUN_TESTS" = true ]; then
-    run_appium_tests
 fi
 
 print_status "Build completed!"
@@ -243,15 +239,13 @@ echo "  Build Summary"
 echo "=========================================="
 if [ -n "$ANDROID_APK_PATH" ]; then
     echo -e "Android APK: ${GREEN}$ANDROID_APK_PATH${NC}"
+    echo -e "Default APK: ${YELLOW}$PROJECT_DIR/androidApp/build/outputs/apk/debug/androidApp-debug.apk${NC}"
 fi
 if [ -n "$IOS_APP_PATH" ]; then
     echo -e "iOS App: ${GREEN}$IOS_APP_PATH${NC}"
 fi
 echo ""
 echo "To run Appium tests manually:"
-if [ -n "$ANDROID_APK_PATH" ]; then
-    echo "  python tests/run_tests.py --platform android --app \"$ANDROID_APK_PATH\""
-fi
-if [ -n "$IOS_APP_PATH" ]; then
-    echo "  python tests/run_tests.py --platform ios --app \"$IOS_APP_PATH\""
-fi
+echo "1. Start Appium server: appium --port 4723 --address 127.0.0.1"
+echo "2. Start Android emulator or iOS simulator"
+echo "3. Run tests from Android Studio in appiumTests module"
