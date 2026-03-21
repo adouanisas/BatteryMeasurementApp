@@ -104,7 +104,7 @@ build_ios() {
             -configuration Debug \
             -sdk iphonesimulator \
             -derivedDataPath "$DERIVED_DATA" \
-            -destination 'platform=iOS Simulator,name=iPhone 15' \
+            -destination 'platform=iOS Simulator,name=iPhone 17' \
             build
     elif [ -d "$PROJECT_DIR/iosApp/iosApp.xcworkspace" ]; then
         xcodebuild -workspace "$PROJECT_DIR/iosApp/iosApp.xcworkspace" \
@@ -112,7 +112,7 @@ build_ios() {
             -configuration Debug \
             -sdk iphonesimulator \
             -derivedDataPath "$DERIVED_DATA" \
-            -destination 'platform=iOS Simulator,name=iPhone 15' \
+            -destination 'platform=iOS Simulator,name=iPhone 17' \
             build
     else
         print_warning "No Xcode project found. Generating with xcodegen or creating manually..."
@@ -125,7 +125,7 @@ build_ios() {
                 -configuration Debug \
                 -sdk iphonesimulator \
                 -derivedDataPath "$DERIVED_DATA" \
-                -destination 'platform=iOS Simulator,name=iPhone 15' \
+                -destination 'platform=iOS Simulator,name=iPhone 17' \
                 build
         else
             print_error "No Xcode project found and xcodegen not installed."
