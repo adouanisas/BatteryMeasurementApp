@@ -1,0 +1,19 @@
+# Build outputs
+build/
+.gradle/
+*.iml
+*.class
+*.jar
+
+# IDE
+.idea/
+*.swp
+*.swo
+*~
+
+# Temporary files
+*.tmp
+*.temp
+*.log
+*.bak
+*.backup

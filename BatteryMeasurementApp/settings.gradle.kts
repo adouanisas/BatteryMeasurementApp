@@ -17,3 +17,5 @@ dependencyResolutionManagement {
 
 include(":composeApp")
 include(":androidApp")
+include(":appiumTests")
+include(":sharedTestTags")

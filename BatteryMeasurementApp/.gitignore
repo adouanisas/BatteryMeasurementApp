@@ -70,6 +70,19 @@ appium.log
 allure-results/
 test-results/
 
+# Appium tests module
+appiumTests/build/
+appiumTests/.gradle/
+appiumTests/*.iml
+appiumTests/out/
+appiumTests/.idea/
+
+# Shared TestTags module
+sharedTestTags/build/
+sharedTestTags/.gradle/
+sharedTestTags/*.iml
+sharedTestTags/.idea/
+
 # Gradle
 .gradle/
 gradle-app.setting

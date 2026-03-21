@@ -39,11 +39,6 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import kotlin.random.Random
 
-object TestTags {
-    const val START_MEASUREMENT_BUTTON = "start_measurement_button"
-    const val RESULT_LABEL = "result_label"
-}
-
 @Composable
 fun App() {
     MaterialTheme {
@@ -86,9 +81,13 @@ fun BatteryMeasurementScreen() {
             style = MaterialTheme.typography.headlineSmall,
             modifier = Modifier
                 .testTag(TestTags.RESULT_LABEL)
-                .semantics { contentDescription = "Measurement result" }
-            // when resultText is empty, the label won't be in the accessibility tree
-            // and if contentDescription is not empty then it will be in the accessibility tree
+// .semantics { contentDescription = "Measurement result" }
+// Note: contentDescription is intentionally removed because:
+// - On iOS, contentDescription overrides the actual text in the accessibility tree,
+//   making element.text return the description instead of the real value.
+// - On Android, contentDescription and text coexist without conflict.
+// - When resultText is empty, the element won't appear in the accessibility tree.
+//   Use a default value like "--" if the element must always be present.
         )
     }
 }

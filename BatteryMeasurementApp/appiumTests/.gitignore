@@ -1,0 +1,27 @@
+# Build outputs
+build/
+out/
+.gradle/
+*.iml
+*.class
+*.jar
+
+# IDE
+.idea/
+*.swp
+*.swo
+*~
+
+# Generated TestTags copy
+src/main/kotlin/com/example/batterymeasurement/TestTags.kt
+
+# Temporary files
+*.tmp
+*.temp
+*.log
+*.bak
+*.backup
+
+# Test results
+test-results/
+allure-results/
