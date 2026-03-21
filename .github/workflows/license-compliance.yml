@@ -25,11 +25,7 @@ jobs:
     - name: Install Python dependencies
       run: |
         python -m pip install --upgrade pip
-        # Install tomli for Python < 3.11 compatibility
-        pip install tomli
-        if [ -f "appium-tests/requirements.txt" ]; then
-          pip install -r appium-tests/requirements.txt
-        fi
+        pip install -r requirements.txt
         
     - name: Run license compliance check
       run: |
