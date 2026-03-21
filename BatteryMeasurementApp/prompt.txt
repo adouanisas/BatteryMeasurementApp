@@ -1,0 +1,115 @@
+You are an expert in open source compliance and software quality, especially for European Commission projects.
+
+I have a Compose Multiplatform project (Kotlin) with Appium tests (Python). I need to ensure it meets all requirements to be published as open source, likely under EUPL v1.2 license.
+
+Please review the project and provide a complete compliance report.
+
+## Project Context
+- License required: EUPL v1.2 (European Union Public License)
+- Target: European Commission (DG GROW) - EEI project
+- Will be published publicly (GitHub or code.europa.eu)
+- Languages: Kotlin (Compose Multiplatform), Python (Appium tests)
+
+## Compliance Checklist
+
+### 1. LICENSE File
+- Does the project have a LICENSE file at the root?
+- Is it EUPL v1.2? (provide full text if missing)
+- Is the copyright year and owner correctly stated?
+
+### 2. License Headers in Source Files
+- Does every source file (.kt, .java, .py, .swift, etc.) have a proper license header?
+- Check format for each language:
+  - Kotlin/Java: /* ... */
+  - Python: # ... or """ ... """
+- Does it include SPDX identifier? (SPDX-License-Identifier: EUPL-1.2)
+- Are copyright years correct and up to date?
+
+### 3. Dependencies License Check
+- Scan all dependencies from:
+  - build.gradle.kts (Kotlin/Android)
+  - Podfile or iosApp/Podfile (iOS if applicable)
+  - requirements.txt or pyproject.toml (Python/Appium)
+- For each dependency, identify:
+  - Name and version
+  - License type
+  - Compatibility with EUPL
+- Generate DEPENDENCIES.md with this information
+
+### 4. Documentation
+- Check README.md:
+  - Does it clearly state the license?
+  - Does it include build instructions?
+  - Does it explain how to run tests (Appium)?
+  - Does it explain how to run the app on both platforms?
+- Check CONTRIBUTING.md: does it exist? (good practice)
+- Check NOTICE file: does it exist for third-party components?
+- Check docs/ folder: is there technical documentation?
+
+### 5. Code Quality & Documentation
+- Is the code well-documented?
+- Are complex functions commented?
+- Are test IDs (testTag, semantics) clearly defined and documented?
+- Is there a clear separation between:
+  - testTag for Espresso/XCUITest
+  - semantics for Appium (contentDescription / accessibilityLabel)
+
+### 6. Security & Secrets
+- Scan for hard-coded secrets: API keys, passwords, tokens, certificates
+- Check .gitignore:
+  - build/, .idea/, .gradle/, local.properties
+  - .env files
+  - signing keys (keystore, .p12)
+  - secrets.properties
+- Ensure no credentials in the codebase
+
+### 7. Repository Structure
+- Check if the structure is clean and professional:
+  - app/
+  - tests/
+  - docs/
+  - scripts/
+  - README.md
+  - LICENSE
+  - .gitignore
+  - build.gradle.kts
+  - settings.gradle.kts
+
+### 8. REUSE Compliance (recommended)
+- Check if project follows REUSE specification (https://reuse.software)
+- Verify LICENSES/ folder if applicable
+
+## Output
+
+Generate the following:
+
+1. COMPLIANCE REPORT with:
+   - Summary table (✅ Pass / ⚠️ Warning / ❌ Fail per category)
+   - Detailed findings
+   - Action items to fix issues (prioritized)
+
+2. MISSING FILES with full content:
+   - LICENSE (EUPL v1.2 full text)
+   - DEPENDENCIES.md
+   - CONTRIBUTING.md
+   - NOTICE (if third-party components)
+   - Updated README.md with license section
+
+3. LICENSE HEADERS to add:
+   - For Kotlin files
+   - For Python files
+   - For Swift files (if iOS)
+
+4. .gitignore if missing or incomplete
+
+5. Recommendations for improvement
+
+## Important Notes
+- The code will be reviewed by the European Commission
+- EUPL is the mandatory license
+- All dependencies must have compatible licenses
+- No proprietary code or secrets allowed
+- Code must be professional and well-documented
+- The project should be easy to build and run by anyone
+
+Please provide a complete review and all necessary files.

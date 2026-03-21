@@ -1,0 +1,112 @@
+Battery Measurement App
+Copyright (c) 2026 Ahmed ADOUANI
+
+This project is licensed under the European Union Public License v1.2 (EUPL-1.2).
+See the LICENSE file for details.
+
+================================================================================
+THIRD-PARTY COMPONENTS
+================================================================================
+
+This project uses the following third-party libraries and components:
+
+--------------------------------------------------------------------------------
+Kotlin Multiplatform & Compose
+--------------------------------------------------------------------------------
+
+Kotlin Multiplatform
+  Copyright: JetBrains s.r.o.
+  License: Apache License 2.0
+  Website: https://kotlinlang.org
+
+Compose Multiplatform
+  Copyright: JetBrains s.r.o.
+  License: Apache License 2.0
+  Website: https://github.com/JetBrains/compose-multiplatform
+
+--------------------------------------------------------------------------------
+Android Components
+--------------------------------------------------------------------------------
+
+AndroidX Libraries (Activity Compose, Core KTX, etc.)
+  Copyright: The Android Open Source Project
+  License: Apache License 2.0
+  Website: https://developer.android.com/jetpack/androidx
+
+Android Gradle Plugin
+  Copyright: The Android Open Source Project
+  License: Apache License 2.0
+  Website: https://developer.android.com/studio/build
+
+--------------------------------------------------------------------------------
+Testing Components
+--------------------------------------------------------------------------------
+
+Appium Python Client
+  Copyright: Appium Contributors
+  License: Apache License 2.0
+  Website: https://github.com/appium/python-client
+
+Selenium
+  Copyright: Software Freedom Conservancy
+  License: Apache License 2.0
+  Website: https://www.selenium.dev
+
+pytest
+  Copyright: Holger Krekel and pytest contributors
+  License: MIT License
+  Website: https://pytest.org
+
+JUnit 5
+  Copyright: The JUnit Team
+  License: Eclipse Public License 2.0
+  Website: https://junit.org/junit5
+
+Appium Java Client
+  Copyright: Appium Contributors
+  License: Apache License 2.0
+  Website: https://github.com/appium/java-client
+
+--------------------------------------------------------------------------------
+Python Utilities
+--------------------------------------------------------------------------------
+
+requests
+  Copyright: Kenneth Reitz
+  License: Apache License 2.0
+  Website: https://requests.readthedocs.io
+
+urllib3
+  Copyright: Andrey Petrov
+  License: MIT License
+  Website: https://urllib3.readthedocs.io
+
+webdriver-manager
+  Copyright: Sergey Pirogov
+  License: Apache License 2.0
+  Website: https://github.com/SergeyPirogov/webdriver_manager
+
+================================================================================
+LICENSE TEXTS
+================================================================================
+
+The full texts of the licenses used by third-party components can be found at:
+
+- Apache License 2.0: https://www.apache.org/licenses/LICENSE-2.0
+- MIT License: https://opensource.org/licenses/MIT
+- Eclipse Public License 2.0: https://www.eclipse.org/legal/epl-2.0/
+- EUPL-1.2: https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12
+
+================================================================================
+ACKNOWLEDGMENTS
+================================================================================
+
+This project was developed for the European Commission (DG GROW) as part of
+the Energy Efficiency Information (EEI) initiative.
+
+Special thanks to:
+- The JetBrains team for Kotlin and Compose Multiplatform
+- The Appium community for mobile testing tools
+- All open source contributors whose work made this project possible
+
+================================================================================
