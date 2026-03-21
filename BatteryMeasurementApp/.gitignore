@@ -97,3 +97,4 @@ ehthumbs.db
 _site/
 .sass-cache/
 .jekyll-cache/
+page_source.xml
