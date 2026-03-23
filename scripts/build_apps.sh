@@ -93,27 +93,31 @@ build_ios() {
     
     check_gradle_wrapper
     
+    # Build Kotlin Multiplatform framework
+    print_status "Building Kotlin Multiplatform framework..."
     ./gradlew :composeApp:linkDebugFrameworkIosSimulatorArm64 || ./gradlew :composeApp:linkDebugFrameworkIosX64
     
     DERIVED_DATA="$PROJECT_DIR/build/ios-derived-data"
     mkdir -p "$DERIVED_DATA"
     
+    # Common xcodebuild arguments
+    XCODEBUILD_ARGS=(
+        -configuration Debug
+        -sdk iphonesimulator
+        -derivedDataPath "$DERIVED_DATA"
+        build
+    )
+    
     if [ -d "$PROJECT_DIR/iosApp/iosApp.xcodeproj" ]; then
+        print_status "Using Xcode project..."
         xcodebuild -project "$PROJECT_DIR/iosApp/iosApp.xcodeproj" \
             -scheme "iosApp" \
-            -configuration Debug \
-            -sdk iphonesimulator \
-            -derivedDataPath "$DERIVED_DATA" \
-            -destination 'platform=iOS Simulator,name=iPhone 15,OS=17.0' \
-            build
+            "${XCODEBUILD_ARGS[@]}"
     elif [ -d "$PROJECT_DIR/iosApp/iosApp.xcworkspace" ]; then
+        print_status "Using Xcode workspace..."
         xcodebuild -workspace "$PROJECT_DIR/iosApp/iosApp.xcworkspace" \
             -scheme "iosApp" \
-            -configuration Debug \
-            -sdk iphonesimulator \
-            -derivedDataPath "$DERIVED_DATA" \
-            -destination 'platform=iOS Simulator,name=iPhone 15,OS=17.0' \
-            build
+            "${XCODEBUILD_ARGS[@]}"
     else
         print_warning "No Xcode project found. Generating with xcodegen or creating manually..."
         
@@ -122,11 +126,7 @@ build_ios() {
             xcodegen generate
             xcodebuild -project "$PROJECT_DIR/iosApp/iosApp.xcodeproj" \
                 -scheme "iosApp" \
-                -configuration Debug \
-                -sdk iphonesimulator \
-                -derivedDataPath "$DERIVED_DATA" \
-            -destination 'platform=iOS Simulator,name=iPhone 15,OS=17.0' \
-                build
+                "${XCODEBUILD_ARGS[@]}"
         else
             print_error "No Xcode project found and xcodegen not installed."
             print_status "Install xcodegen: brew install xcodegen"
@@ -135,6 +135,7 @@ build_ios() {
         fi
     fi
     
+    # Find the built app
     APP_PATH=$(find "$DERIVED_DATA" -name "*.app" -type d | head -1)
     
     if [ -n "$APP_PATH" ] && [ -d "$APP_PATH" ]; then
