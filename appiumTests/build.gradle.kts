@@ -20,18 +20,18 @@ kotlin {
 dependencies {
     // Kotlin
     implementation(kotlin("stdlib"))
-    
+
     // Appium Java Client 9.0.0 (new API)
-    implementation("io.appium:java-client:9.0.0")
-    
+    implementation(libs.java.client)
+
     // JUnit 5
-    testImplementation(platform("org.junit:junit-bom:5.10.0"))
-    testImplementation("org.junit.jupiter:junit-jupiter")
-    testImplementation("org.junit.jupiter:junit-jupiter-params")
-    
+    testImplementation(platform(libs.junit.bom))
+    testImplementation(libs.junit.jupiter)
+    testImplementation(libs.junit.jupiter.params)
+
     // Kotlin test
     testImplementation(kotlin("test"))
-    
+
     // Access to shared TestTags from sharedTestTags module
     implementation(project(":sharedTestTags"))
 }

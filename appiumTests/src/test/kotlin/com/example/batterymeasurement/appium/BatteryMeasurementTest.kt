@@ -17,10 +17,9 @@ SPDX-License-Identifier: EUPL-1.2
 package com.example.batterymeasurement.appium
 
 import com.example.batterymeasurement.TestTags
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
-import java.io.File
 
 /**
  * Base test class with shared test logic.
@@ -33,31 +32,31 @@ abstract class BatteryMeasurementTest : BaseAppiumTest() {
     fun testBatteryLevelDisplay() {
         println("Testing battery level display on $platform...")
         sleep(3)
-        
+
         val button = findByTag(TestTags.START_MEASUREMENT_BUTTON)
         button.click()
         sleep(2)
-        
+
         val batteryLevelElement = findByTag(TestTags.RESULT_LABEL)
         assertTrue(batteryLevelElement.isDisplayed)
         val batteryText = batteryLevelElement.text
         assertTrue(batteryText.contains("%"))
         println("Battery level displayed on $platform: $batteryText")
     }
-    
+
     @Test
     fun testMeasureButton() {
         println("Testing measure button on $platform...")
-        
+
         val measureButton = findByTag(TestTags.START_MEASUREMENT_BUTTON)
         assertTrue(measureButton.isDisplayed)
-        
+
         val buttonText = measureButton.text
         println("Measure button text on $platform: $buttonText")
-        
+
         measureButton.click()
         sleep(2)
-        
+
         val batteryLevelElement = findByTag(TestTags.RESULT_LABEL)
         val updatedText = batteryLevelElement.text
         println("Updated battery level on $platform: $updatedText")

@@ -1,200 +1,176 @@
-# Battery Measurement App - Compose Multiplatform POC
+# EEI Commission — Energy Efficiency Index Measurement Tool
 
-A simple Compose Multiplatform app demonstrating battery measurement simulation with Appium testing support.
+A **Kotlin Multiplatform** (Compose Multiplatform) mobile application for measuring and calculating the **Energy Efficiency Index (EEI)** of mobile devices, following **EU Regulation 2023/1669**.
+
+Open source under [EUPL-1.2](LICENSE).
+
+---
+
+## Overview
+
+The EEI measures how energy-efficient a device is during a standardized "Day of Use" scenario defined by the EU regulation. This tool automates the measurement process across Android and iOS from a single shared codebase.
+
+**Current status:** foundational structure in place — battery UI, Appium tests, EUPL compliance tooling. Core EEI features (battery measurement, Day of Use scenario, EEI calculation, reporting) are under active development.
+
+---
 
 ## Project Structure
 
 ```
-├── composeApp/                 # Shared Compose Multiplatform code
+├── composeApp/          # Shared Compose Multiplatform UI + business logic
 │   └── src/
-│       ├── commonMain/         # Common UI code
-│       ├── androidMain/        # Android-specific implementations
-│       └── iosMain/            # iOS-specific implementations
-├── androidApp/                 # Android application module
-├── iosApp/                     # iOS application (Xcode project)
-├── appiumTests/                # Appium test module (Kotlin)
-├── sharedTestTags/             # Shared test tags for Appium
-├── scripts/                    # Build and utility scripts
-└── gradle/                     # Gradle wrapper
+│       ├── commonMain/  # Common code (UI, EEI logic)
+│       ├── androidMain/ # Android-specific implementations
+│       └── iosMain/     # iOS-specific implementations
+├── androidApp/          # Android application module
+├── iosApp/              # iOS application (Xcode project)
+├── appiumTests/         # Appium E2E tests (Kotlin/JUnit 5)
+├── sharedTestTags/      # Shared test tag constants (KMP)
+├── scripts/             # Build and compliance scripts
+└── gradle/              # Gradle wrapper and version catalog
 ```
+
+---
 
 ## Prerequisites
 
-### For Building
-- **JDK 17+** (Android Studio includes one, or install separately)
-- **Gradle** (if not using the wrapper):
-  ```bash
-  # If you already have a JDK installed
-  brew install --ignore-dependencies gradle@8
-  
-  # Or with OpenJDK included
-  brew install gradle@8
-  ```
-- **Android Studio** (Arctic Fox or later) with:
-  - Android SDK 34
-  - Android Emulator
-- **Xcode 15+** (for iOS, macOS only)
-- **Kotlin Multiplatform Mobile plugin** (install via Android Studio plugins)
+### Build
 
-### For Testing
-- **Node.js 16+** (for Appium)
+- **JDK 17+**
+- **Android Studio** (Hedgehog or later) with Android SDK 34+
+- **Xcode 15+** (iOS, macOS only)
+- **Kotlin Multiplatform Mobile plugin** (Android Studio)
+
+```bash
+# Install Gradle wrapper (already included)
+./gradlew --version
+```
+
+### Testing
+
+- **Node.js 16+**
 - **Appium 2.x**
-- **Android Studio** (to run Kotlin Appium tests)
-
-## Building the App
-
-### Android
 
 ```bash
-sh scripts/build_apps.sh --android
-```
-
-The APK will be at: `androidApp/build/outputs/apk/debug/androidApp-debug.apk`
-
-### iOS
-
-```bash
-sh scripts/build_apps.sh --ios
-```
-
-The app will be built for the iOS Simulator.
-
-## Appium Testing
-
-### 1. Install Appium
-
-```bash
-# Install Appium globally
 npm install -g appium
-
-# Install drivers
-appium driver install uiautomator2  # For Android
-appium driver install xcuitest      # For iOS
+appium driver install uiautomator2   # Android
+appium driver install xcuitest       # iOS
 ```
 
-### 2. Start Appium Server
+---
+
+## Building
+
+```bash
+# Android APK
+./scripts/build_apps.sh --android
+
+# iOS simulator app
+./scripts/build_apps.sh --ios
+
+# Both platforms
+./scripts/build_apps.sh --all
+```
+
+| Platform | Output path |
+|---|---|
+| Android | `androidApp/build/outputs/apk/debug/androidApp-debug.apk` |
+| iOS | `build/ios-derived-data/Build/Products/Debug-iphonesimulator/` |
+
+---
+
+## Code Quality
+
+Static analysis is enforced via **detekt**:
+
+```bash
+./gradlew detekt
+```
+
+Configuration: [`detekt.yml`](detekt.yml). Rules are applied to all modules. Compose Multiplatform generated sources are automatically excluded.
+
+---
+
+## Running Tests
+
+Start Appium server first:
 
 ```bash
 appium --port 4723 --address 127.0.0.1
 ```
 
-### 3. Build the Apps
+Then run:
 
 ```bash
-# Build iOS app
-sh scripts/build_apps.sh --ios
-
-# Build Android app
-sh scripts/build_apps.sh --android
+./gradlew :appiumTests:androidTest   # Android
+./gradlew :appiumTests:iosTest       # iOS
+./gradlew :appiumTests:allAppiumTests
 ```
 
-### 4. Run Tests
+Override APK path or device via system properties:
 
-1. Start an Android emulator or iOS simulator
-2. Open the project in Android Studio
-3. Run the Appium tests from the `appiumTests` module
+```bash
+./gradlew :appiumTests:androidTest -DapkPath=/path/to/app.apk
+```
 
-## Accessibility Identifiers (Test Tags)
+See [`appiumTests/README.md`](appiumTests/README.md) and [`appiumTests/ANDROID_STUDIO_SETUP.md`](appiumTests/ANDROID_STUDIO_SETUP.md) for IDE setup.
 
-The following test tags are used for Appium testing:
+### Test Tags (Accessibility IDs)
 
-| Element | Test Tag / Accessibility ID |
-|---------|----------------------------|
+| Element | Tag |
+|---|---|
 | Start Measurement Button | `start_measurement_button` |
 | Result Label | `result_label` |
 
-## App Features
-
-- **Start Measurement Button**: Simulates a battery measurement
-- **Result Label**: Displays "Battery consumption: X%" where X is 50-100
-- **Logging**: Each measurement is logged with a timestamp
+---
 
 ## Troubleshooting
 
-### Android
-- Ensure `ANDROID_HOME` is set correctly
-- Make sure USB debugging is enabled for physical devices
-- Check that the emulator is running: `adb devices`
+**Android**
+- Verify `ANDROID_HOME` is set
+- Check emulator is running: `adb devices`
 
-### iOS
-- Ensure Xcode command line tools are installed: `xcode-select --install`
-- For simulators, use: `xcrun simctl list devices`
+**iOS**
+- Install Xcode CLI tools: `xcode-select --install`
+- List simulators: `xcrun simctl list devices`
 
-### Appium
-- Verify Appium is running: `curl http://127.0.0.1:4723/status`
-- Check driver installation: `appium driver list --installed`
+**Appium**
+- Check server status: `curl http://127.0.0.1:4723/status`
+- List installed drivers: `appium driver list --installed`
 
-## Open Source Compliance
+---
 
-This project is developed for European Commission projects and follows strict open source compliance requirements.
+## License Compliance
 
-### License
-- **Primary License**: EUPL-1.2 (European Union Public Licence)
-- **SPDX Identifier**: `EUPL-1.2`
-- **Copyright**: © 2026 Ahmed ADOUANI
-
-### License Files
-- `LICENSE` - Full EUPL-1.2 text
-- `DEPENDENCIES.md` - License analysis of all dependencies
-- All source files contain EUPL license headers
-
-### Compliance Status
-✅ **All dependencies are EUPL-compatible**  
-✅ **All source files have proper license headers**  
-✅ **No hard-coded secrets in the codebase**  
-✅ **Complete dependency documentation**  
-✅ **Automated compliance checking**
-
-### Automated Compliance Checking
-This project includes automated tools for EUPL compliance:
+This project enforces **EUPL-1.2** compliance on all dependencies.
 
 ```bash
-# Run the license compliance checker
-python scripts/check-licenses.py
-
-# Update dependency documentation
-python scripts/update-dependencies-md.py
+python scripts/check-licenses.py       # Check compliance
+python scripts/update-dependencies-md.py  # Update DEPENDENCIES.md
 ```
 
-The automated checker will:
-- Scan all build files for dependencies
-- Check license compatibility with EUPL-1.2
-- Generate compliance reports
-- Update documentation
+All new dependencies must be EUPL-1.2 compatible. See [`DEPENDENCIES.md`](DEPENDENCIES.md) for the full analysis.
 
-### CI/CD Integration
-GitHub Actions workflow (`.github/workflows/license-compliance.yml`):
-- Runs on every push and pull request
-- Weekly scheduled checks
-- Automatic PR creation for documentation updates
-- PR comments with compliance status
+**Compliance status:**
+- All dependencies are EUPL-compatible
+- All source files carry EUPL-1.2 license headers
+- Automated compliance checks run on every push (GitHub Actions)
 
-### Building for EU Projects
-When building for European Commission projects:
-1. Ensure all contributors accept the EUPL terms
-2. Maintain the license headers in all new files
-3. Verify new dependencies are EUPL-compatible
-4. Run automated compliance checks before releases
-5. Update documentation using automated tools
+References: [EUPL-1.2 text](https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12) · [EUPL compatibility guidelines](https://joinup.ec.europa.eu/collection/eupl/guidelines-eupl-licence)
 
-### References
-- [EUPL-1.2 Official Text](https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12)
-- [EUPL Compatibility Guidelines](https://joinup.ec.europa.eu/collection/eupl/guidelines-eupl-licence)
-- [SPDX License Identifiers](https://spdx.org/licenses/)
+---
 
 ## Contributing
-See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on contributing to this project.
+
+See [CONTRIBUTING.md](CONTRIBUTING.md). This project uses **conventional commits** and **semantic versioning**. Changes are tracked in [CHANGELOG.md](CHANGELOG.md).
+
+---
 
 ## License
 
-Copyright (c) 2026 Ahmed ADOUANI
+Copyright © 2026 Ahmed ADOUANI
 
-Licensed under the EUPL, Version 1.2 or – as soon they will be approved by the European Commission - subsequent versions of the EUPL (the "Licence");
-You may not use this work except in compliance with the Licence.
-You may obtain a copy of the Licence at:
+Licensed under the EUPL, Version 1.2. You may obtain a copy of the licence at:
 https://joinup.ec.europa.eu/collection/eupl/eupl-text-eupl-12
 
-Unless required by applicable law or agreed to in writing, software distributed under the Licence is distributed on an "AS IS" basis, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the Licence for the specific language governing permissions and limitations under the Licence.
-
-SPDX-License-Identifier: EUPL-1.2
+`SPDX-License-Identifier: EUPL-1.2`

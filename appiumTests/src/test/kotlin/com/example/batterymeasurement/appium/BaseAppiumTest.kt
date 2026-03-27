@@ -36,16 +36,15 @@ abstract class BaseAppiumTest {
         const val APPIUM_HOST = "localhost"
         const val APPIUM_PORT = 4723
 
-        fun isAppiumRunning(): Boolean {
-            return try {
+        fun isAppiumRunning(): Boolean =
+            try {
                 Socket().use { socket ->
                     socket.connect(InetSocketAddress(APPIUM_HOST, APPIUM_PORT), 2000)
                     true
                 }
-            } catch (e: Exception) {
+            } catch (@Suppress("SwallowedException") e: Exception) {
                 false
             }
-        }
 
         fun findLatestApk(): String? {
             val apkDir = File("../build/test-apks")
@@ -57,7 +56,7 @@ abstract class BaseAppiumTest {
             val apkFiles = apkDir.listFiles { file -> file.extension == "apk" }
             return apkFiles?.maxByOrNull { it.lastModified() }?.absolutePath
         }
-        
+
         fun findIosApp(): String? {
             // Check the iOS build location you provided
             val iosAppPath = File("../build/ios-derived-data/Build/Products/Debug-iphonesimulator/iosApp.app")
@@ -76,28 +75,30 @@ abstract class BaseAppiumTest {
     open fun setUp() {
         val isRunning = isAppiumRunning()
         println("Appium server check: $isRunning")
-        
+
         if (!isRunning) {
             println("ERROR: Appium server not running on $APPIUM_HOST:$APPIUM_PORT")
             println("Start it with: appium --port $APPIUM_PORT --address $APPIUM_HOST")
-            throw IllegalStateException("Appium server not running. Start it with: appium --port $APPIUM_PORT --address $APPIUM_HOST")
+            error("Appium server not running. Start it with: appium --port $APPIUM_PORT --address $APPIUM_HOST")
         }
 
-        driver = when (platform) {
-            "android" -> createAndroidDriver()
-            "ios" -> createIosDriver()
-            else -> throw IllegalArgumentException("Unsupported platform: $platform")
-        }
+        driver =
+            when (platform) {
+                "android" -> createAndroidDriver()
+                "ios" -> createIosDriver()
+                else -> throw IllegalArgumentException("Unsupported platform: $platform")
+            }
 
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10))
         println("Appium session started successfully for platform: $platform")
     }
 
     private fun createAndroidDriver(): AndroidDriver {
-        val options = UiAutomator2Options()
-            .setPlatformName("Android")
-            .setAutomationName("UiAutomator2")
-            .setDeviceName(deviceName)
+        val options =
+            UiAutomator2Options()
+                .setPlatformName("Android")
+                .setAutomationName("UiAutomator2")
+                .setDeviceName(deviceName)
 
         val apkPath = androidApkPath
         if (apkPath.isNotEmpty()) {
@@ -117,10 +118,11 @@ abstract class BaseAppiumTest {
     }
 
     private fun createIosDriver(): IOSDriver {
-        val options = XCUITestOptions()
-            .setPlatformName("iOS")
-            .setAutomationName("XCUITest")
-            .setDeviceName(deviceName)
+        val options =
+            XCUITestOptions()
+                .setPlatformName("iOS")
+                .setAutomationName("XCUITest")
+                .setDeviceName(deviceName)
 
         if (iosAppPath.isNotEmpty()) {
             options.setApp(iosAppPath)
@@ -144,15 +146,15 @@ abstract class BaseAppiumTest {
         }
     }
 
-    protected fun findByTag(tag: String): WebElement {
-        return when (platform) {
-            "android" -> driver.findElement(
-                AppiumBy.androidUIAutomator("new UiSelector().resourceIdMatches(\".*$tag.*\")")
-            )
+    protected fun findByTag(tag: String): WebElement =
+        when (platform) {
+            "android" ->
+                driver.findElement(
+                    AppiumBy.androidUIAutomator("new UiSelector().resourceIdMatches(\".*$tag.*\")"),
+                )
             "ios" -> driver.findElement(AppiumBy.accessibilityId(tag))
-            else -> throw IllegalStateException("Unsupported platform: $platform")
+            else -> error("Unsupported platform: $platform")
         }
-    }
 
     protected fun sleep(seconds: Long) {
         Thread.sleep(seconds * 1000)

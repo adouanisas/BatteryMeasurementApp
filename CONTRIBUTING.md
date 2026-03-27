@@ -25,8 +25,13 @@ Follow the coding standards and ensure compliance with EUPL requirements.
 
 ### 4. Test Your Changes
 - Run the app on Android and/or iOS
-- Execute Appium tests: `cd appium-tests && python test_battery_measurement.py`
-- Ensure all tests pass
+- Run static analysis: `./gradlew detekt`
+- Execute Appium tests (requires Appium server on `localhost:4723`):
+  ```bash
+  ./gradlew :appiumTests:androidTest   # Android
+  ./gradlew :appiumTests:iosTest       # iOS
+  ```
+- Ensure all checks pass
 
 ### 5. Commit Your Changes
 Use conventional commit messages:
@@ -153,6 +158,8 @@ SPDX-License-Identifier: EUPL-1.2
 ## Review Process
 
 1. **Automated Checks**: GitHub Actions will run:
+   - Static analysis (`detekt`)
+   - Unit tests
    - Build verification
    - License header check
    - Dependency license check

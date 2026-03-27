@@ -34,8 +34,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import kotlin.random.Random
 
@@ -44,7 +42,7 @@ fun App() {
     MaterialTheme {
         Surface(
             modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colorScheme.background
+            color = MaterialTheme.colorScheme.background,
         ) {
             BatteryMeasurementScreen()
         }
@@ -56,11 +54,12 @@ fun BatteryMeasurementScreen() {
     var resultText by remember { mutableStateOf("") }
 
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.Center,
     ) {
         Button(
             onClick = {
@@ -68,8 +67,9 @@ fun BatteryMeasurementScreen() {
                 resultText = "Battery consumption: $batteryValue%"
                 logMeasurement(batteryValue)
             },
-            modifier = Modifier
-                .testTag(TestTags.START_MEASUREMENT_BUTTON)
+            modifier =
+                Modifier
+                    .testTag(TestTags.START_MEASUREMENT_BUTTON),
         ) {
             Text("Start Measurement")
         }
@@ -79,8 +79,9 @@ fun BatteryMeasurementScreen() {
         Text(
             text = resultText,
             style = MaterialTheme.typography.headlineSmall,
-            modifier = Modifier
-                .testTag(TestTags.RESULT_LABEL)
+            modifier =
+                Modifier
+                    .testTag(TestTags.RESULT_LABEL),
 // .semantics { contentDescription = "Measurement result" }
 // Note: contentDescription is intentionally removed because:
 // - On iOS, contentDescription overrides the actual text in the accessibility tree,

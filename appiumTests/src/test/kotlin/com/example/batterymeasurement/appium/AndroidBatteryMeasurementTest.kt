@@ -24,7 +24,6 @@ import org.junit.jupiter.api.Tag
  */
 @Tag("android")
 class AndroidBatteryMeasurementTest : BatteryMeasurementTest() {
-
     override var platform: String = "android"
     override val deviceName: String = "Android Emulator"
 }

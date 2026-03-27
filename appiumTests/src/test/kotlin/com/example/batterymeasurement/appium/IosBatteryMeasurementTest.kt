@@ -16,8 +16,6 @@ SPDX-License-Identifier: EUPL-1.2
 
 package com.example.batterymeasurement.appium
 
-import org.junit.jupiter.api.Assumptions.assumeTrue
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Tag
 
 /**

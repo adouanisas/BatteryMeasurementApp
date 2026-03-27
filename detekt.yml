@@ -1,0 +1,45 @@
+build:
+  maxIssues: 0
+
+config:
+  validation: true
+  warningsAsErrors: false
+
+naming:
+  FunctionNaming:
+    active: true
+    # Allow PascalCase for @Composable functions (Compose convention)
+    ignoreAnnotated:
+      - 'Composable'
+  ClassNaming:
+    active: true
+    # Compose generated classes use lowercase — ignore generated packages
+    ignoreAnnotated:
+      - 'Composable'
+
+style:
+  MaxLineLength:
+    active: true
+    maxLineLength: 140
+    excludeCommentStatements: true
+  WildcardImport:
+    active: true
+    excludeImports:
+      - 'kotlinx.coroutines.*'
+
+complexity:
+  LongMethod:
+    active: true
+    threshold: 60
+  LongParameterList:
+    active: true
+    functionThreshold: 8
+    constructorThreshold: 8
+
+comments:
+  UndocumentedPublicClass:
+    active: false
+  UndocumentedPublicFunction:
+    active: false
+  UndocumentedPublicProperty:
+    active: false
