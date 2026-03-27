@@ -17,14 +17,13 @@ SPDX-License-Identifier: EUPL-1.2
 package com.adouani.eei
 
 /**
- * Platform bridge — each target provides its own [BatteryDataSource] implementation.
- * - Android: [AndroidBatteryDataSource] via BatteryManager
- * - iOS: [IosBatteryDataSource] via UIDevice
+ * Abstraction over the platform battery API.
+ * Allows unit testing business logic without Android/iOS runtime dependencies.
  */
-expect fun createBatteryDataSource(): BatteryDataSource
-
-/**
- * Convenience top-level function used by the UI layer.
- * Delegates to [BatteryService] with the platform-specific data source.
- */
-fun getBatteryLevel(): Int = BatteryService(createBatteryDataSource()).getBatteryLevel()
+interface BatteryDataSource {
+    /**
+     * Returns the current battery level as a percentage (0–100),
+     * or -1 if the level cannot be determined (emulator, simulator, or error).
+     */
+    fun getLevel(): Int
+}

@@ -93,6 +93,24 @@ Configuration: [`detekt.yml`](detekt.yml). Rules are applied to all modules. Com
 
 ## Running Tests
 
+### Unit Tests
+
+No device or emulator required. Runs on JVM.
+
+```bash
+# Run all unit tests
+./gradlew :composeApp:testDebugUnitTest
+
+# Open HTML report
+open composeApp/build/reports/tests/testDebugUnitTest/index.html
+```
+
+Covered by unit tests:
+- `BatteryServiceTest` (11 tests) — battery level range, availability, edge cases
+- Uses `FakeBatteryDataSource` — no platform runtime needed
+
+### E2E Tests (Appium)
+
 Start Appium server first:
 
 ```bash

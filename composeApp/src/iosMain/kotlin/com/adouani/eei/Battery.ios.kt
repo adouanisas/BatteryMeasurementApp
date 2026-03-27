@@ -18,14 +18,14 @@ package com.adouani.eei
 
 import platform.UIKit.UIDevice
 
-/**
- * iOS implementation: reads the battery level using UIDevice.
- * Enables battery monitoring if not already active.
- * Returns 0–100 (integer percentage), or -1 if unavailable (e.g. simulator).
- */
-actual fun getBatteryLevel(): Int {
-    val device = UIDevice.currentDevice
-    device.batteryMonitoringEnabled = true
-    val level = device.batteryLevel
-    return if (level < 0f) -1 else (level * 100).toInt()
+/** iOS implementation using [UIDevice.currentDevice.batteryLevel]. */
+class IosBatteryDataSource : BatteryDataSource {
+    override fun getLevel(): Int {
+        val device = UIDevice.currentDevice
+        device.batteryMonitoringEnabled = true
+        val level = device.batteryLevel
+        return if (level < 0f) -1 else (level * 100).toInt()
+    }
 }
+
+actual fun createBatteryDataSource(): BatteryDataSource = IosBatteryDataSource()

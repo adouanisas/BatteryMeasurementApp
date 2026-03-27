@@ -19,13 +19,14 @@ package com.adouani.eei
 import android.content.Context
 import android.os.BatteryManager
 
-/**
- * Android implementation: reads the battery capacity using BatteryManager.
- * Returns 0–100 (integer percentage), or -1 if unavailable.
- */
-actual fun getBatteryLevel(): Int {
-    val bm = AppContext.context.getSystemService(Context.BATTERY_SERVICE) as? BatteryManager
-        ?: return -1
-    val level = bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY)
-    return if (level == Int.MIN_VALUE) -1 else level
+/** Android implementation using [BatteryManager.BATTERY_PROPERTY_CAPACITY]. */
+class AndroidBatteryDataSource : BatteryDataSource {
+    override fun getLevel(): Int {
+        val bm = AppContext.context.getSystemService(Context.BATTERY_SERVICE) as? BatteryManager
+            ?: return -1
+        val level = bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY)
+        return if (level == Int.MIN_VALUE) -1 else level
+    }
 }
+
+actual fun createBatteryDataSource(): BatteryDataSource = AndroidBatteryDataSource()

@@ -14,10 +14,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - CI workflow (`ci.yml`) with lint (detekt), unit tests, and Android build jobs
 - Detekt report uploaded as CI artifact on every run
 - Real battery measurement via `expect`/`actual` platform bridge
-  - `Battery.kt` — `expect fun getBatteryLevel(): Int` in `commonMain`
-  - `Battery.android.kt` — `BatteryManager.BATTERY_PROPERTY_CAPACITY` (returns -1 on emulator)
-  - `Battery.ios.kt` — `UIDevice.current.batteryLevel` (returns -1 on simulator)
+  - `BatteryDataSource` interface (`commonMain`) — testable abstraction over platform APIs
+  - `BatteryService` (`commonMain`) — business logic: clamping, availability check
+  - `AndroidBatteryDataSource` — `BatteryManager.BATTERY_PROPERTY_CAPACITY` (returns -1 on emulator)
+  - `IosBatteryDataSource` — `UIDevice.current.batteryLevel` (returns -1 on simulator)
   - `AppContext` — Android application context holder, initialized in `MainActivity.onCreate()`
+- Unit tests for battery logic (`BatteryServiceTest`, 11 tests, `commonTest`)
+  - `FakeBatteryDataSource` — test double, no platform runtime required
 
 ### Changed
 - Replaced ktlint with detekt — resolves incompatibility with Compose Multiplatform generated sources
@@ -26,6 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Package and bundle ID renamed: `com.example.batterymeasurement` → `com.adouani.eei`
 - Android `applicationId`: `com.adouani.eei.android`
 - iOS bundle ID: `com.adouani.eei`
+- Battery bridge refactored: `expect fun getBatteryLevel()` replaced by `expect fun createBatteryDataSource()` + `BatteryService` layer for testability
 
 ### Fixed
 - Import ordering and wildcard imports in Appium test files
