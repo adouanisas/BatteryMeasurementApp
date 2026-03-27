@@ -113,3 +113,5 @@ _site/
 .jekyll-cache/
 page_source.xml
 settings.local.json
+plan.md
+iosApp/iosApp.xcodeproj/project.xcworkspace/xcuserdata
