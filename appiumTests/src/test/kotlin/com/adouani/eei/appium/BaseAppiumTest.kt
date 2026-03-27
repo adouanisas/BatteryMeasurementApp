@@ -14,7 +14,7 @@ limitations under the Licence.
 SPDX-License-Identifier: EUPL-1.2
 */
 
-package com.example.batterymeasurement.appium
+package com.adouani.eei.appium
 
 import io.appium.java_client.AppiumBy
 import io.appium.java_client.AppiumDriver

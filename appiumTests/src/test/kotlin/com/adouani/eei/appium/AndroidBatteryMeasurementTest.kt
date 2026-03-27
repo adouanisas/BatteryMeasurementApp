@@ -14,9 +14,16 @@ limitations under the Licence.
 SPDX-License-Identifier: EUPL-1.2
 */
 
-package com.example.batterymeasurement
+package com.adouani.eei.appium
 
-import androidx.compose.ui.window.ComposeUIViewController
+import org.junit.jupiter.api.Tag
 
-@Suppress("FunctionName")
-fun MainViewController() = ComposeUIViewController { App() }
+/**
+ * Android-specific test launcher.
+ * Extends the shared test logic and sets platform to Android.
+ */
+@Tag("android")
+class AndroidBatteryMeasurementTest : BatteryMeasurementTest() {
+    override var platform: String = "android"
+    override val deviceName: String = "Android Emulator"
+}

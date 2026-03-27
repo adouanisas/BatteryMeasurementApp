@@ -41,7 +41,7 @@ kotlin {
 }
 
 android {
-    namespace = "com.example.batterymeasurement"
+    namespace = "com.adouani.eei"
     compileSdk = 36
 
     defaultConfig {

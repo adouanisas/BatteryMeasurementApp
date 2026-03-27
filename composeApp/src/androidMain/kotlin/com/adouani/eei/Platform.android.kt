@@ -14,16 +14,14 @@ limitations under the Licence.
 SPDX-License-Identifier: EUPL-1.2
 */
 
-package com.example.batterymeasurement.appium
+package com.adouani.eei
 
-import org.junit.jupiter.api.Tag
+import android.util.Log
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
-/**
- * Android-specific test launcher.
- * Extends the shared test logic and sets platform to Android.
- */
-@Tag("android")
-class AndroidBatteryMeasurementTest : BatteryMeasurementTest() {
-    override var platform: String = "android"
-    override val deviceName: String = "Android Emulator"
+actual fun logMeasurement(batteryValue: Int) {
+    val timestamp = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date())
+    Log.d("BatteryMeasurement", "[$timestamp] Battery measurement: $batteryValue%")
 }

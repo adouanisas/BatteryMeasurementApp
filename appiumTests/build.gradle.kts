@@ -3,7 +3,7 @@ plugins {
     id("java-library")
 }
 
-group = "com.example.batterymeasurement"
+group = "com.adouani.eei"
 version = "1.0.0"
 
 repositories {

@@ -11,11 +11,11 @@ kotlin {
 }
 
 android {
-    namespace = "com.example.batterymeasurement.android"
+    namespace = "com.adouani.eei.android"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.example.batterymeasurement.android"
+        applicationId = "com.adouani.eei.android"
         minSdk = 30
         //noinspection OldTargetApi
         targetSdk = 35

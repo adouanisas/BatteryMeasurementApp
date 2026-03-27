@@ -31,7 +31,7 @@ kotlin {
 }
 
 android {
-    namespace = "com.example.batterymeasurement.sharedtesttags"
+    namespace = "com.adouani.eei.sharedtesttags"
     compileSdk = 35
 
     defaultConfig {

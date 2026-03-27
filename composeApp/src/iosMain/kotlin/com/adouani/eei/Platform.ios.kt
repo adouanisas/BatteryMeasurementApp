@@ -14,7 +14,7 @@ limitations under the Licence.
 SPDX-License-Identifier: EUPL-1.2
 */
 
-package com.example.batterymeasurement
+package com.adouani.eei
 
 import platform.Foundation.NSDate
 import platform.Foundation.NSDateFormatter

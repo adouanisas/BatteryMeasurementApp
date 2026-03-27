@@ -14,9 +14,9 @@ limitations under the Licence.
 SPDX-License-Identifier: EUPL-1.2
 */
 
-package com.example.batterymeasurement.appium
+package com.adouani.eei.appium
 
-import com.example.batterymeasurement.TestTags
+import com.adouani.eei.TestTags
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test

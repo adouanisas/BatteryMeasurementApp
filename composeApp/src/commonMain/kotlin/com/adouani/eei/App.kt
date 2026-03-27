@@ -14,7 +14,7 @@ limitations under the Licence.
 SPDX-License-Identifier: EUPL-1.2
 */
 
-package com.example.batterymeasurement
+package com.adouani.eei
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

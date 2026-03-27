@@ -14,7 +14,7 @@ limitations under the Licence.
 SPDX-License-Identifier: EUPL-1.2
 */
 
-package com.example.batterymeasurement
+package com.adouani.eei
 
 object TestTags {
     const val START_MEASUREMENT_BUTTON = "start_measurement_button"
