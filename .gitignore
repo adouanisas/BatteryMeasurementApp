@@ -111,3 +111,4 @@ _site/
 .sass-cache/
 .jekyll-cache/
 page_source.xml
+settings.local.json
