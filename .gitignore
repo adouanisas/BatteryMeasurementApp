@@ -8,6 +8,7 @@
 *.apk
 *.aab
 *.jar
+!gradle/wrapper/gradle-wrapper.jar
 *.class
 .kotlin/
 
