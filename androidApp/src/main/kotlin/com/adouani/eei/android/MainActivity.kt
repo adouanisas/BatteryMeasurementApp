@@ -24,10 +24,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import com.adouani.eei.App
+import com.adouani.eei.AppContext
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        AppContext.context = applicationContext
         enableEdgeToEdge()
         setContent {
             androidx.compose.ui.layout.Layout(

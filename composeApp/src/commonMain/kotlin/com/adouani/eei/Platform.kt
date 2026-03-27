@@ -16,8 +16,5 @@ SPDX-License-Identifier: EUPL-1.2
 
 package com.adouani.eei
 
-import platform.Foundation.NSLog
-
-actual fun logMessage(tag: String, message: String) {
-    NSLog("[$tag] $message")
-}
+/** Platform-specific log output. */
+expect fun logMessage(tag: String, message: String)

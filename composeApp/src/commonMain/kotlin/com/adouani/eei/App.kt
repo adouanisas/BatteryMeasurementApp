@@ -35,7 +35,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
-import kotlin.random.Random
 
 @Composable
 fun App() {
@@ -54,24 +53,20 @@ fun BatteryMeasurementScreen() {
     var resultText by remember { mutableStateOf("") }
 
     Column(
-        modifier =
-            Modifier
-                .fillMaxSize()
-                .padding(16.dp),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
         Button(
             onClick = {
-                val batteryValue = Random.nextInt(50, 101)
-                resultText = "Battery consumption: $batteryValue%"
-                logMeasurement(batteryValue)
+                val level = getBatteryLevel()
+                resultText = if (level >= 0) "Battery level: $level%" else "Battery level: unavailable"
             },
-            modifier =
-                Modifier
-                    .testTag(TestTags.START_MEASUREMENT_BUTTON),
+            modifier = Modifier.testTag(TestTags.START_MEASUREMENT_BUTTON),
         ) {
-            Text("Start Measurement")
+            Text("Measure Battery")
         }
 
         Spacer(modifier = Modifier.height(24.dp))
@@ -79,18 +74,7 @@ fun BatteryMeasurementScreen() {
         Text(
             text = resultText,
             style = MaterialTheme.typography.headlineSmall,
-            modifier =
-                Modifier
-                    .testTag(TestTags.RESULT_LABEL),
-// .semantics { contentDescription = "Measurement result" }
-// Note: contentDescription is intentionally removed because:
-// - On iOS, contentDescription overrides the actual text in the accessibility tree,
-//   making element.text return the description instead of the real value.
-// - On Android, contentDescription and text coexist without conflict.
-// - When resultText is empty, the element won't appear in the accessibility tree.
-//   Use a default value like "--" if the element must always be present.
+            modifier = Modifier.testTag(TestTags.RESULT_LABEL),
         )
     }
 }
-
-expect fun logMeasurement(batteryValue: Int)

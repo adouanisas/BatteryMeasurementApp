@@ -16,8 +16,16 @@ SPDX-License-Identifier: EUPL-1.2
 
 package com.adouani.eei
 
-import platform.Foundation.NSLog
+import android.content.Context
+import android.os.BatteryManager
 
-actual fun logMessage(tag: String, message: String) {
-    NSLog("[$tag] $message")
+/**
+ * Android implementation: reads the battery capacity using BatteryManager.
+ * Returns 0–100 (integer percentage), or -1 if unavailable.
+ */
+actual fun getBatteryLevel(): Int {
+    val bm = AppContext.context.getSystemService(Context.BATTERY_SERVICE) as? BatteryManager
+        ?: return -1
+    val level = bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY)
+    return if (level == Int.MIN_VALUE) -1 else level
 }

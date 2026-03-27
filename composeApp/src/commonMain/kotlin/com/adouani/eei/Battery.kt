@@ -16,8 +16,12 @@ SPDX-License-Identifier: EUPL-1.2
 
 package com.adouani.eei
 
-import platform.Foundation.NSLog
-
-actual fun logMessage(tag: String, message: String) {
-    NSLog("[$tag] $message")
-}
+/**
+ * Returns the current battery level as a percentage (0–100),
+ * or -1 if the level cannot be determined on this platform.
+ *
+ * Platform implementations:
+ * - Android: BatteryManager.BATTERY_PROPERTY_CAPACITY
+ * - iOS: UIDevice.current.batteryLevel × 100
+ */
+expect fun getBatteryLevel(): Int

@@ -13,15 +13,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Static analysis with **detekt** (`detekt.yml`) — replaces ktlint
 - CI workflow (`ci.yml`) with lint (detekt), unit tests, and Android build jobs
 - Detekt report uploaded as CI artifact on every run
+- Real battery measurement via `expect`/`actual` platform bridge
+  - `Battery.kt` — `expect fun getBatteryLevel(): Int` in `commonMain`
+  - `Battery.android.kt` — `BatteryManager.BATTERY_PROPERTY_CAPACITY` (returns -1 on emulator)
+  - `Battery.ios.kt` — `UIDevice.current.batteryLevel` (returns -1 on simulator)
+  - `AppContext` — Android application context holder, initialized in `MainActivity.onCreate()`
 
 ### Changed
 - Replaced ktlint with detekt — resolves incompatibility with Compose Multiplatform generated sources
 - CI lint job updated: `ktlintCheck` → `detekt`
 - `@Composable` functions excluded from `FunctionNaming` rule in `detekt.yml`
+- Package and bundle ID renamed: `com.example.batterymeasurement` → `com.adouani.eei`
+- Android `applicationId`: `com.adouani.eei.android`
+- iOS bundle ID: `com.adouani.eei`
 
 ### Fixed
 - Import ordering and wildcard imports in Appium test files
 - `throw IllegalStateException(...)` replaced with idiomatic `error(...)` in `BaseAppiumTest`
+- `gradle-wrapper.jar` committed and excluded from `*.jar` gitignore rule
 
 ---
 

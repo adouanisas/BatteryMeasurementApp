@@ -17,11 +17,7 @@ SPDX-License-Identifier: EUPL-1.2
 package com.adouani.eei
 
 import android.util.Log
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 
-actual fun logMeasurement(batteryValue: Int) {
-    val timestamp = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date())
-    Log.d("BatteryMeasurement", "[$timestamp] Battery measurement: $batteryValue%")
+actual fun logMessage(tag: String, message: String) {
+    Log.d(tag, message)
 }

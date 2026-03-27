@@ -16,8 +16,16 @@ SPDX-License-Identifier: EUPL-1.2
 
 package com.adouani.eei
 
-import platform.Foundation.NSLog
+import platform.UIKit.UIDevice
 
-actual fun logMessage(tag: String, message: String) {
-    NSLog("[$tag] $message")
+/**
+ * iOS implementation: reads the battery level using UIDevice.
+ * Enables battery monitoring if not already active.
+ * Returns 0–100 (integer percentage), or -1 if unavailable (e.g. simulator).
+ */
+actual fun getBatteryLevel(): Int {
+    val device = UIDevice.currentDevice
+    device.batteryMonitoringEnabled = true
+    val level = device.batteryLevel
+    return if (level < 0f) -1 else (level * 100).toInt()
 }

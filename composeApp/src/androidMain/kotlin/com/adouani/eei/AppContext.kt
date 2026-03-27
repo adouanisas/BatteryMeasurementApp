@@ -16,8 +16,12 @@ SPDX-License-Identifier: EUPL-1.2
 
 package com.adouani.eei
 
-import platform.Foundation.NSLog
+import android.content.Context
 
-actual fun logMessage(tag: String, message: String) {
-    NSLog("[$tag] $message")
+/**
+ * Holds a reference to the Android application context.
+ * Must be initialized in MainActivity.onCreate() before any battery API call.
+ */
+object AppContext {
+    lateinit var context: Context
 }
